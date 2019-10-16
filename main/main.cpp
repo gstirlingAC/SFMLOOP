@@ -13,13 +13,19 @@ sf::RenderWindow window(vm, "Hello SFML Game!!!", sf::Style::Default);
 sf::Texture skyTexture, bgTexture, heroTexture;
 sf::Sprite skySprite, bgSprite, heroSprite;
 
+// Set up player movement
+sf::Vector2f playerPosition;
+bool playerMoving = false;
+
 void init();
 void draw();
 void updateInput();
+void update(float);
 
 int main()
 {
 	// Initialize Game Objects
+	sf::Clock clock;
 	init();
 
 	// Game loop
@@ -27,8 +33,12 @@ int main()
 	{
 		// Handle Keyboard Events
 		updateInput();
-		// Update Game Objects in the scene
+
+		// Update Game
+		sf::Time dt = clock.restart();
+		update(dt.asSeconds());
 		window.clear(sf::Color::Red);
+
 		// Render game Objects
 		draw();
 		window.display();
@@ -65,7 +75,31 @@ void updateInput()
 	sf::Event event;
 	while (window.pollEvent(event))
 	{
+		if (event.type == sf::Event::KeyPressed)
+		{
+			if (event.key.code == sf::Keyboard::Right)
+			{
+				playerMoving = true;
+			}
+		}
+
+		if (event.type == sf::Event::KeyReleased)
+		{
+			if (event.key.code == sf::Keyboard::Right)
+			{
+				playerMoving = false;
+			}
+		}
+
 		if (event.key.code == sf::Keyboard::Escape || event.type == sf::Event::Closed)
 			window.close();
+	}
+}
+
+void update(float dt)
+{
+	if (playerMoving)
+	{
+		heroSprite.move(50.0f * dt, 0);
 	}
 }
