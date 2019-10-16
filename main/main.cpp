@@ -10,8 +10,8 @@ sf::VideoMode vm(viewSize.x, viewSize.y);
 sf::RenderWindow window(vm, "Hello SFML Game!!!", sf::Style::Default);
 
 // Set up graphics
-sf::Texture skyTexture;
-sf::Sprite skySprite;
+sf::Texture skyTexture, bgTexture, heroTexture;
+sf::Sprite skySprite, bgSprite, heroSprite;
 
 void init();
 void draw();
@@ -38,12 +38,22 @@ void init()
 {
 	// Load sky texture
 	skyTexture.loadFromFile("Assets/graphics/sky.png");
+	bgTexture.loadFromFile("Assets/graphics/bg.png");
+	heroTexture.loadFromFile("Assets/graphics/hero.png");
 
 	// Set and attach a texture to sprite
 	skySprite.setTexture(skyTexture);
+	bgSprite.setTexture(bgTexture);
+	heroSprite.setTexture(heroTexture);
+
+	// Initialise the hero sprite
+	heroSprite.setPosition(sf::Vector2f(viewSize.x / 2, viewSize.y / 2));
+	heroSprite.setOrigin(heroTexture.getSize().x / 2, heroTexture.getSize().y / 2);
 }
 
 void draw()
 {
 	window.draw(skySprite);
+	window.draw(bgSprite);
+	window.draw(heroSprite);
 }
