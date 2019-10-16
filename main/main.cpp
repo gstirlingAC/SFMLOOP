@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "SFML/x86/include/SFML/Graphics.hpp"
+#include "Hero.h"
 
 // Set up the window
 sf::Vector2f viewSize(1024, 768);
@@ -10,8 +11,9 @@ sf::VideoMode vm(viewSize.x, viewSize.y);
 sf::RenderWindow window(vm, "Hello SFML Game!!!", sf::Style::Default);
 
 // Set up graphics
-sf::Texture skyTexture, bgTexture, heroTexture;
-sf::Sprite skySprite, bgSprite, heroSprite;
+sf::Texture skyTexture, bgTexture;
+sf::Sprite skySprite, bgSprite;
+Hero hero;
 
 // Set up player movement
 sf::Vector2f playerPosition;
@@ -51,23 +53,21 @@ void init()
 	// Load sky texture
 	skyTexture.loadFromFile("Assets/graphics/sky.png");
 	bgTexture.loadFromFile("Assets/graphics/bg.png");
-	heroTexture.loadFromFile("Assets/graphics/hero.png");
+	
 
 	// Set and attach a texture to sprite
 	skySprite.setTexture(skyTexture);
 	bgSprite.setTexture(bgTexture);
-	heroSprite.setTexture(heroTexture);
 
 	// Initialise the hero sprite
-	heroSprite.setPosition(sf::Vector2f(viewSize.x / 2, viewSize.y / 2));
-	heroSprite.setOrigin(heroTexture.getSize().x / 2, heroTexture.getSize().y / 2);
+	hero.init("Assets/graphics/hero.png", sf::Vector2f(viewSize.x * 0.25f, viewSize.y * 0.5f), 200);
 }
 
 void draw()
 {
 	window.draw(skySprite);
 	window.draw(bgSprite);
-	window.draw(heroSprite);
+	window.draw(hero.getSprite());
 }
 
 void updateInput()
@@ -77,17 +77,9 @@ void updateInput()
 	{
 		if (event.type == sf::Event::KeyPressed)
 		{
-			if (event.key.code == sf::Keyboard::Right)
+			if (event.key.code == sf::Keyboard::Up)
 			{
-				playerMoving = true;
-			}
-		}
-
-		if (event.type == sf::Event::KeyReleased)
-		{
-			if (event.key.code == sf::Keyboard::Right)
-			{
-				playerMoving = false;
+				hero.jump(750.0f);
 			}
 		}
 
@@ -98,8 +90,5 @@ void updateInput()
 
 void update(float dt)
 {
-	if (playerMoving)
-	{
-		heroSprite.move(50.0f * dt, 0);
-	}
+	hero.update(dt);
 }
