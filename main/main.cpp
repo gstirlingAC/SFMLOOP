@@ -15,6 +15,7 @@ sf::Sprite skySprite, bgSprite, heroSprite;
 
 void init();
 void draw();
+void updateInput();
 
 int main()
 {
@@ -25,6 +26,7 @@ int main()
 	while (window.isOpen()) 
 	{
 		// Handle Keyboard Events
+		updateInput();
 		// Update Game Objects in the scene
 		window.clear(sf::Color::Red);
 		// Render game Objects
@@ -56,4 +58,14 @@ void draw()
 	window.draw(skySprite);
 	window.draw(bgSprite);
 	window.draw(heroSprite);
+}
+
+void updateInput()
+{
+	sf::Event event;
+	while (window.pollEvent(event))
+	{
+		if (event.key.code == sf::Keyboard::Escape || event.type == sf::Event::Closed)
+			window.close();
+	}
 }
