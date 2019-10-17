@@ -7,6 +7,7 @@
 
 #include "Hero.h"
 #include "Enemy.h"
+#include "Rocket.h"
 
 // Set up the window
 sf::Vector2f viewSize(1024, 768);
@@ -18,6 +19,7 @@ sf::Texture skyTexture, bgTexture;
 sf::Sprite skySprite, bgSprite;
 Hero hero;
 std::vector<Enemy*> enemies;
+std::vector<Rocket*> rockets;
 
 // Timer variables
 float currentTime;
@@ -32,6 +34,7 @@ void draw();
 void updateInput();
 void update(float);
 void spawnEnemy();
+void shoot();
 
 int main()
 {
@@ -85,6 +88,11 @@ void draw()
 	{
 		window.draw(enemy->getSprite());
 	}
+
+	for (Rocket *rocket : rockets)
+	{
+		window.draw(rocket->getSprite());
+	}
 }
 
 void updateInput()
@@ -97,6 +105,11 @@ void updateInput()
 			if (event.key.code == sf::Keyboard::Up)
 			{
 				hero.jump(750.0f);
+			}
+
+			if (event.key.code == sf::Keyboard::Space)
+			{
+				shoot();
 			}
 		}
 
@@ -128,6 +141,19 @@ void update(float dt)
 		{
 			enemies.erase(enemies.begin() + i);
 			delete(enemy);
+		}
+	}
+
+	//Update rockets
+	for (int i = 0; i < rockets.size(); i++)
+	{
+		Rocket* rocket = rockets[i];
+		rocket->update(dt);
+
+		if (rocket->getSprite().getPosition().x > viewSize.x)
+		{
+			rockets.erase(rockets.begin() + i);
+			delete(rocket);
 		}
 	}
 }
@@ -163,4 +189,12 @@ void spawnEnemy()
 	enemy->init("Assets/graphics/enemy.png", enemyPos, speed);
 
 	enemies.push_back(enemy);
+}
+
+void shoot()
+{
+	Rocket* rocket = new Rocket();
+	rocket->init("Assets/graphics/rocket.png", hero.getSprite().getPosition(), 400.0f);
+
+	rockets.push_back(rocket);
 }
