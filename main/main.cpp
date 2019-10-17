@@ -35,6 +35,7 @@ void updateInput();
 void update(float);
 void spawnEnemy();
 void shoot();
+bool checkCollision(sf::Sprite sprite1, sf::Sprite sprite2);
 
 int main()
 {
@@ -156,6 +157,27 @@ void update(float dt)
 			delete(rocket);
 		}
 	}
+
+	// Check collision between Rocket and Enemies
+	for (int i = 0; i < rockets.size(); i++)
+	{
+		for (int j = 0; j < enemies.size(); j++)
+		{
+			Rocket* rocket = rockets[i];
+			Enemy* enemy = enemies[j];
+
+			if (checkCollision(rocket->getSprite(), enemy->getSprite()))
+			{
+				rockets.erase(rockets.begin() + i);
+				enemies.erase(enemies.begin() + j);
+
+				delete(rocket);
+				delete(enemy);
+
+				printf("rocket intersects enemy \n");
+			}
+		}
+	}
 }
 
 void spawnEnemy()
@@ -197,4 +219,19 @@ void shoot()
 	rocket->init("Assets/graphics/rocket.png", hero.getSprite().getPosition(), 400.0f);
 
 	rockets.push_back(rocket);
+}
+
+bool checkCollision(sf::Sprite sprite1, sf::Sprite sprite2)
+{
+	sf::FloatRect shape1 = sprite1.getGlobalBounds();
+	sf::FloatRect shape2 = sprite2.getGlobalBounds();
+
+	if (shape1.intersects(shape2))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
